@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package studyplaces;
+option go_package = "/types_registry";
+
+service typesRegistry {
+  rpc GetGroupsByIds(IdList) returns (Groups) {}
+  rpc GetRoomsByIds(IdList) returns (Rooms) {}
+  rpc GetStudentsByIds(IdList) returns (Students) {}
+  rpc GetSubjectsByIds(IdList) returns (Subjects) {}
+  rpc GetTeachersByIds(IdList) returns (Teachers) {}
+}
+
+message IdList {
+  string token = 1;
+  string studyPlaceId = 2;
+  repeated string ids = 3;
+}
+
+message Group {
+  string id = 1;
+  string name = 2;
+}
+
+message Groups {
+  map<string, Group> list = 1;
+}
+
+message Room {
+  string id = 1;
+  string name = 2;
+}
+
+message Rooms {
+  map<string, Room >list = 1;
+}
+
+message Student {
+  string id = 1;
+  string name = 2;
+}
+
+message Students {
+  map<string, Student >list = 1;
+}
+
+message Subject {
+  string id = 1;
+  string name = 2;
+}
+
+message Subjects {
+  map<string, Subject >list = 1;
+}
+
+message Teacher {
+  string id = 1;
+  string name = 2;
+}
+
+message Teachers {
+  map<string, Teacher >list = 1;
+}
+
+

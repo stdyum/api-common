@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package studyplaces;
+option go_package = "/studyplaces";
+
+service studyplaces {
+  rpc Auth(EnrollmentToken) returns (EnrollmentUser) {}
+}
+
+message EnrollmentToken {
+  string token = 1;
+  string studyPlaceId = 2;
+}
+
+enum EnrollmentRole {
+  TEACHER = 0;
+  STUDENT = 1;
+  STAFF = 2;
+  ADMIN = 3;
+}
+
+message Enrollment {
+  string id = 1;
+  string userId = 2;
+  string studyPlaceId = 3;
+  string userName = 4;
+  EnrollmentRole role = 5;
+  string typeId = 6;
+  repeated string permissions = 7;
+  bool accepted = 8;
+  bool blocked = 9;
+}
+
+message EnrollmentUser {
+  string id = 1;
+  string login = 2;
+  string pictureUrl = 3;
+  string email = 4;
+  bool verifiedEmail = 5;
+  Enrollment enrollment = 6;
+}

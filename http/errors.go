@@ -2,8 +2,12 @@ package http
 
 import (
 	"database/sql"
-	"github.com/stdyum/api-common/errors"
+	"errors"
 	"net/http"
+
+	errorsMapper "github.com/stdyum/api-common/errors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var SqlErrorMap = map[error]any{
@@ -12,9 +16,9 @@ var SqlErrorMap = map[error]any{
 	sql.ErrNoRows: http.StatusNotFound,
 }
 
-var ErrorMapper *errors.Mapper
+var ErrorMapper *errorsMapper.Mapper
 
-var ErrorMapperBuilder = errors.NewBuilder().
+var ErrorMapperBuilder = errorsMapper.NewBuilder().
 	OnNotFound(http.StatusInternalServerError).
 	AppendMap(SqlErrorMap)
 
@@ -24,6 +28,52 @@ func RegisterErrors(errs ...map[error]any) {
 }
 
 func MapError(err error) (int, error) {
+	st, ok := status.FromError(errors.Unwrap(err))
+	if ok {
+		return MapGrpcErrors(st), errors.New(st.Message())
+	}
+
 	code, err := ErrorMapper.Get(err)
 	return code.(int), err
+}
+
+func MapGrpcErrors(s *status.Status) int {
+	switch s.Code() {
+	case codes.OK:
+		return http.StatusOK
+	case codes.Canceled:
+		return http.StatusRequestTimeout
+	case codes.Unknown:
+		return http.StatusInternalServerError
+	case codes.InvalidArgument:
+		return http.StatusBadRequest
+	case codes.DeadlineExceeded:
+		return http.StatusGatewayTimeout
+	case codes.NotFound:
+		return http.StatusNotFound
+	case codes.AlreadyExists:
+		return http.StatusConflict
+	case codes.PermissionDenied:
+		return http.StatusForbidden
+	case codes.ResourceExhausted:
+		return http.StatusTooManyRequests
+	case codes.FailedPrecondition:
+		return http.StatusPreconditionFailed
+	case codes.Aborted:
+		return http.StatusConflict
+	case codes.OutOfRange:
+		return http.StatusBadRequest
+	case codes.Unimplemented:
+		return http.StatusNotImplemented
+	case codes.Internal:
+		return http.StatusInternalServerError
+	case codes.Unavailable:
+		return http.StatusServiceUnavailable
+	case codes.DataLoss:
+		return http.StatusInternalServerError
+	case codes.Unauthenticated:
+		return http.StatusUnauthorized
+	default:
+		return http.StatusInternalServerError
+	}
 }

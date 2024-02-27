@@ -1,11 +1,12 @@
 package server
 
 import (
+	"net"
+	"sync"
+
 	"github.com/sirupsen/logrus"
 	"github.com/stdyum/api-common/grpc"
 	"github.com/stdyum/api-common/http"
-	"net"
-	"sync"
 )
 
 type PortConfig struct {
@@ -14,18 +15,25 @@ type PortConfig struct {
 }
 
 type Routes struct {
+	Error error
+	Ports PortConfig
+
 	GRPC grpc.Routes
 	HTTP http.Routes
 }
 
-func (r *Routes) Run(ports PortConfig) error {
+func (r Routes) Run() error {
+	if r.Error != nil {
+		return r.Error
+	}
+
 	var wg sync.WaitGroup
 
 	if r.GRPC != nil {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			listener, err := net.Listen("tcp", ":"+ports.GRPC)
+			listener, err := net.Listen("tcp", ":"+r.Ports.GRPC)
 			if err != nil {
 				logrus.Errorf("http server error: %v\n", err)
 				return
@@ -42,7 +50,7 @@ func (r *Routes) Run(ports PortConfig) error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			if err := r.HTTP.ConfigureRoutes().Run(":" + ports.HTTP); err != nil {
+			if err := r.HTTP.ConfigureRoutes().Run(":" + r.Ports.HTTP); err != nil {
 				logrus.Errorf("http server error: %v\n", err)
 				return
 			}

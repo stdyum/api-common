@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"database/sql"
+
 	"github.com/stdyum/api-common/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -30,6 +31,10 @@ func MapError(err error) (codes.Code, error) {
 }
 
 func ConvertError(err error) error {
+	if err == nil {
+		return nil
+	}
+
 	code, err := MapError(err)
 	return status.Error(code, err.Error())
 }

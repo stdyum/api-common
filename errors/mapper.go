@@ -24,12 +24,18 @@ func (m *Mapper) Get(err error) (any, error) {
 		unwrapped = errors.Unwrap(unwrapped)
 	}
 
+	res := m.onNotFound
+
+	defer func() {
+		recover() // todo, find better way to deal with 'unhashable errors'
+	}()
+
 	out, ok := m.Errors[unwrapped]
-	if !ok {
-		return m.onNotFound, err
+	if ok {
+		return out, err
 	}
 
-	return out, err
+	return res, err
 }
 
 type MapperBuilder struct {

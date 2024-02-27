@@ -1,7 +1,9 @@
 package http
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/stdyum/api-common/hc"
+)
 
 type Routes interface {
-	ConfigureRoutes() *gin.Engine
+	ConfigureRoutes() *hc.Engine
 }
