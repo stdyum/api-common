@@ -12,7 +12,7 @@ func parseEnvData(content string) map[string]string {
 	lines := strings.Split(content, "\n")
 	envs := make(map[string]string)
 	for _, line := range lines {
-		i := strings.Index(line, "=")
+		i := strings.Index(strings.TrimSpace(line), "=")
 		if i == -1 {
 			continue
 		}
