@@ -5,6 +5,7 @@ import (
 )
 
 type Engine struct {
+	IRoutes
 	*gin.Engine
 }
 

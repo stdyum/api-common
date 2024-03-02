@@ -1,0 +1,17 @@
+#!/bin/sh
+
+go_test() {
+  go test -v ./...
+
+  # shellcheck disable=SC2181
+  if [ $? -ne 0 ]; then
+    echo "Tests failed."
+    exit 1
+  fi
+
+  echo "Tests passed successfully!"
+}
+
+go_test
+
+exit 0

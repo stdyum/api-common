@@ -5,7 +5,11 @@ import (
 )
 
 func New() *Engine {
-	return &Engine{gin.New()}
+	g := gin.New()
+	return &Engine{
+		Engine:  g,
+		IRoutes: ConvertIRoutesFromGin(g),
+	}
 }
 
 func Recovery() HandlerFunc {
