@@ -2,12 +2,14 @@ package metrics
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"runtime"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stdyum/api-common/hc"
 )
 
-func metrics(ctx *gin.Context) {
+func metrics(ctx *hc.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"RAM": getRAMUsage(),
 	})

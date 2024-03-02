@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stdyum/api-common/grpc"
 	"github.com/stdyum/api-common/http"
+	"github.com/stdyum/api-common/http/metrics"
 )
 
 type PortConfig struct {
@@ -50,7 +51,10 @@ func (r Routes) Run() error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			if err := r.HTTP.ConfigureRoutes().Run(":" + r.Ports.HTTP); err != nil {
+
+			e := r.HTTP.ConfigureRoutes()
+			metrics.ApplyMetrics(e)
+			if err := e.Run(":" + r.Ports.HTTP); err != nil {
 				logrus.Errorf("http server error: %v\n", err)
 				return
 			}

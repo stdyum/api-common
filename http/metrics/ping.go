@@ -1,10 +1,11 @@
 package metrics
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/stdyum/api-common/hc"
+
 	"net/http"
 )
 
-func ping(ctx *gin.Context) {
+func ping(ctx *hc.Context) {
 	ctx.JSON(http.StatusOK, "pong")
 }

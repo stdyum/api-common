@@ -1,8 +1,10 @@
 package metrics
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/stdyum/api-common/hc"
+)
 
-func ApplyMetrics(group *gin.RouterGroup) {
+func ApplyMetrics(group *hc.RouterGroup) {
 	group.Any("/ping", ping)
 	group.GET("/metrics", metrics)
 }
