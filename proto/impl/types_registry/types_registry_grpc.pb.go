@@ -22,11 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TypesRegistryClient interface {
-	GetGroupsByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Groups, error)
-	GetRoomsByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Rooms, error)
-	GetStudentsByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Students, error)
-	GetSubjectsByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Subjects, error)
-	GetTeachersByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Teachers, error)
+	GetTypesByIds(ctx context.Context, in *TypesIds, opts ...grpc.CallOption) (*TypesModels, error)
 }
 
 type typesRegistryClient struct {
@@ -37,45 +33,9 @@ func NewTypesRegistryClient(cc grpc.ClientConnInterface) TypesRegistryClient {
 	return &typesRegistryClient{cc}
 }
 
-func (c *typesRegistryClient) GetGroupsByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Groups, error) {
-	out := new(Groups)
-	err := c.cc.Invoke(ctx, "/studyplaces.typesRegistry/GetGroupsByIds", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *typesRegistryClient) GetRoomsByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Rooms, error) {
-	out := new(Rooms)
-	err := c.cc.Invoke(ctx, "/studyplaces.typesRegistry/GetRoomsByIds", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *typesRegistryClient) GetStudentsByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Students, error) {
-	out := new(Students)
-	err := c.cc.Invoke(ctx, "/studyplaces.typesRegistry/GetStudentsByIds", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *typesRegistryClient) GetSubjectsByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Subjects, error) {
-	out := new(Subjects)
-	err := c.cc.Invoke(ctx, "/studyplaces.typesRegistry/GetSubjectsByIds", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *typesRegistryClient) GetTeachersByIds(ctx context.Context, in *IdList, opts ...grpc.CallOption) (*Teachers, error) {
-	out := new(Teachers)
-	err := c.cc.Invoke(ctx, "/studyplaces.typesRegistry/GetTeachersByIds", in, out, opts...)
+func (c *typesRegistryClient) GetTypesByIds(ctx context.Context, in *TypesIds, opts ...grpc.CallOption) (*TypesModels, error) {
+	out := new(TypesModels)
+	err := c.cc.Invoke(ctx, "/studyplaces.typesRegistry/GetTypesByIds", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,11 +46,7 @@ func (c *typesRegistryClient) GetTeachersByIds(ctx context.Context, in *IdList, 
 // All implementations must embed UnimplementedTypesRegistryServer
 // for forward compatibility
 type TypesRegistryServer interface {
-	GetGroupsByIds(context.Context, *IdList) (*Groups, error)
-	GetRoomsByIds(context.Context, *IdList) (*Rooms, error)
-	GetStudentsByIds(context.Context, *IdList) (*Students, error)
-	GetSubjectsByIds(context.Context, *IdList) (*Subjects, error)
-	GetTeachersByIds(context.Context, *IdList) (*Teachers, error)
+	GetTypesByIds(context.Context, *TypesIds) (*TypesModels, error)
 	mustEmbedUnimplementedTypesRegistryServer()
 }
 
@@ -98,20 +54,8 @@ type TypesRegistryServer interface {
 type UnimplementedTypesRegistryServer struct {
 }
 
-func (UnimplementedTypesRegistryServer) GetGroupsByIds(context.Context, *IdList) (*Groups, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGroupsByIds not implemented")
-}
-func (UnimplementedTypesRegistryServer) GetRoomsByIds(context.Context, *IdList) (*Rooms, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRoomsByIds not implemented")
-}
-func (UnimplementedTypesRegistryServer) GetStudentsByIds(context.Context, *IdList) (*Students, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetStudentsByIds not implemented")
-}
-func (UnimplementedTypesRegistryServer) GetSubjectsByIds(context.Context, *IdList) (*Subjects, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSubjectsByIds not implemented")
-}
-func (UnimplementedTypesRegistryServer) GetTeachersByIds(context.Context, *IdList) (*Teachers, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTeachersByIds not implemented")
+func (UnimplementedTypesRegistryServer) GetTypesByIds(context.Context, *TypesIds) (*TypesModels, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTypesByIds not implemented")
 }
 func (UnimplementedTypesRegistryServer) mustEmbedUnimplementedTypesRegistryServer() {}
 
@@ -126,92 +70,20 @@ func RegisterTypesRegistryServer(s grpc.ServiceRegistrar, srv TypesRegistryServe
 	s.RegisterService(&TypesRegistry_ServiceDesc, srv)
 }
 
-func _TypesRegistry_GetGroupsByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IdList)
+func _TypesRegistry_GetTypesByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TypesIds)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TypesRegistryServer).GetGroupsByIds(ctx, in)
+		return srv.(TypesRegistryServer).GetTypesByIds(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/studyplaces.typesRegistry/GetGroupsByIds",
+		FullMethod: "/studyplaces.typesRegistry/GetTypesByIds",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TypesRegistryServer).GetGroupsByIds(ctx, req.(*IdList))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _TypesRegistry_GetRoomsByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IdList)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TypesRegistryServer).GetRoomsByIds(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/studyplaces.typesRegistry/GetRoomsByIds",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TypesRegistryServer).GetRoomsByIds(ctx, req.(*IdList))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _TypesRegistry_GetStudentsByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IdList)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TypesRegistryServer).GetStudentsByIds(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/studyplaces.typesRegistry/GetStudentsByIds",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TypesRegistryServer).GetStudentsByIds(ctx, req.(*IdList))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _TypesRegistry_GetSubjectsByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IdList)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TypesRegistryServer).GetSubjectsByIds(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/studyplaces.typesRegistry/GetSubjectsByIds",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TypesRegistryServer).GetSubjectsByIds(ctx, req.(*IdList))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _TypesRegistry_GetTeachersByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IdList)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TypesRegistryServer).GetTeachersByIds(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/studyplaces.typesRegistry/GetTeachersByIds",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TypesRegistryServer).GetTeachersByIds(ctx, req.(*IdList))
+		return srv.(TypesRegistryServer).GetTypesByIds(ctx, req.(*TypesIds))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -224,24 +96,8 @@ var TypesRegistry_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*TypesRegistryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetGroupsByIds",
-			Handler:    _TypesRegistry_GetGroupsByIds_Handler,
-		},
-		{
-			MethodName: "GetRoomsByIds",
-			Handler:    _TypesRegistry_GetRoomsByIds_Handler,
-		},
-		{
-			MethodName: "GetStudentsByIds",
-			Handler:    _TypesRegistry_GetStudentsByIds_Handler,
-		},
-		{
-			MethodName: "GetSubjectsByIds",
-			Handler:    _TypesRegistry_GetSubjectsByIds_Handler,
-		},
-		{
-			MethodName: "GetTeachersByIds",
-			Handler:    _TypesRegistry_GetTeachersByIds_Handler,
+			MethodName: "GetTypesByIds",
+			Handler:    _TypesRegistry_GetTypesByIds_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
