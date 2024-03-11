@@ -18,24 +18,25 @@ func NewEmpty() *Mapper {
 	return New(make(map[error]any), nil)
 }
 
-func (m *Mapper) Get(err error) (any, error) {
+func (m *Mapper) Get(err error) (out any, outErr error) {
 	unwrapped := err
 	for errors.Unwrap(unwrapped) != nil {
 		unwrapped = errors.Unwrap(unwrapped)
 	}
 
-	res := m.onNotFound
+	out = m.onNotFound
+	outErr = err
 
 	defer func() {
 		recover() // todo, find better way to deal with 'unhashable errors'
 	}()
 
-	out, ok := m.Errors[unwrapped]
+	foundErr, ok := m.Errors[unwrapped]
 	if ok {
-		return out, err
+		return foundErr, err
 	}
 
-	return res, err
+	return
 }
 
 type MapperBuilder struct {

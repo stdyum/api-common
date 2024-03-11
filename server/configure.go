@@ -40,7 +40,12 @@ func (r Routes) Run() error {
 				return
 			}
 
-			if err = r.GRPC.ConfigureRoutes().Serve(listener); err != nil {
+			routes := r.GRPC.ConfigureRoutes()
+			if routes == nil {
+				return
+			}
+
+			if err = routes.Serve(listener); err != nil {
 				logrus.Errorf("http server error: %v\n", err)
 				return
 			}
@@ -53,6 +58,10 @@ func (r Routes) Run() error {
 			defer wg.Done()
 
 			e := r.HTTP.ConfigureRoutes()
+			if e == nil {
+				return
+			}
+
 			metrics.ApplyMetrics(e)
 			if err := e.Run(":" + r.Ports.HTTP); err != nil {
 				logrus.Errorf("http server error: %v\n", err)

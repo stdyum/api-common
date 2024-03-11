@@ -1,6 +1,7 @@
 package hc
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,11 @@ func (ctx *Context) QueryTime(key string) (time.Time, error) {
 func (ctx *Context) QueryUUID(key string) (uuid.UUID, error) {
 	value := ctx.Query(key)
 	return uuid.Parse(value)
+}
+
+func (ctx *Context) QueryInt(key string) (int, error) {
+	value := ctx.Query(key)
+	return strconv.Atoi(value)
 }
 
 func (ctx *Context) PaginationQuery() pagination.CreatedAtPageQuery {
