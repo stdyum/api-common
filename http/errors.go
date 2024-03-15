@@ -16,10 +16,16 @@ var SqlErrorMap = map[error]any{
 	sql.ErrNoRows: http.StatusNotFound,
 }
 
+var CustomErrorMap = map[error]any{
+	errorsMapper.ErrValidation:   http.StatusUnprocessableEntity,
+	errorsMapper.ErrUnauthorized: http.StatusUnauthorized,
+}
+
 var ErrorMapper *errorsMapper.Mapper
 
 var ErrorMapperBuilder = errorsMapper.NewBuilder().
 	OnNotFound(http.StatusInternalServerError).
+	AppendMap(CustomErrorMap).
 	AppendMap(SqlErrorMap)
 
 func RegisterErrors(errs ...map[error]any) {

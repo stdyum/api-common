@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/stdyum/api-common/errors"
 	"github.com/stdyum/api-common/grpc/clients"
 	"github.com/stdyum/api-common/models"
 	"github.com/stdyum/api-common/proto/impl/auth"
@@ -43,27 +44,22 @@ func EnrollmentAuth(ctx context.Context, token string, studyPlaceId string) (mod
 
 	userId, err := uuid.Parse(userRpc.Id)
 	if err != nil {
-		return models.EnrollmentUser{}, err
+		return models.EnrollmentUser{}, errors.WrapString(errors.ErrValidation, "user id is not valid uuid")
 	}
 
 	enrollmentId, err := uuid.Parse(userRpc.Enrollment.Id)
 	if err != nil {
-		return models.EnrollmentUser{}, err
-	}
-
-	enrollmentUserId, err := uuid.Parse(userRpc.Enrollment.UserId)
-	if err != nil {
-		return models.EnrollmentUser{}, err
+		return models.EnrollmentUser{}, errors.WrapString(errors.ErrValidation, "enrollment id is not valid uuid")
 	}
 
 	enrollmentStudyPlaceId, err := uuid.Parse(userRpc.Enrollment.StudyPlaceId)
 	if err != nil {
-		return models.EnrollmentUser{}, err
+		return models.EnrollmentUser{}, errors.WrapString(errors.ErrValidation, "study place is not valid uuid")
 	}
 
 	enrollmentTypeId, err := uuid.Parse(userRpc.Enrollment.TypeId)
 	if err != nil {
-		return models.EnrollmentUser{}, err
+		return models.EnrollmentUser{}, errors.WrapString(errors.ErrValidation, "type id is not valid uuid")
 	}
 
 	permissions := make([]models.Permission, len(userRpc.Enrollment.Permissions))
@@ -74,7 +70,7 @@ func EnrollmentAuth(ctx context.Context, token string, studyPlaceId string) (mod
 	enrollment := models.Enrollment{
 		Token:        token,
 		ID:           enrollmentId,
-		UserId:       enrollmentUserId,
+		UserId:       userId,
 		StudyPlaceId: enrollmentStudyPlaceId,
 		UserName:     userRpc.Enrollment.UserName,
 		Role:         models.Role(strings.ToLower(userRpc.Enrollment.Role.String())),

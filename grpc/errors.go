@@ -14,10 +14,16 @@ var SqlErrorMap = map[error]any{
 	sql.ErrNoRows: codes.NotFound,
 }
 
+var CustomErrorMap = map[error]any{
+	errors.ErrValidation:   codes.InvalidArgument,
+	errors.ErrUnauthorized: codes.Unauthenticated,
+}
+
 var ErrorMapper *errors.Mapper
 
 var ErrorMapperBuilder = errors.NewBuilder().
 	OnNotFound(codes.Unknown).
+	AppendMap(CustomErrorMap).
 	AppendMap(SqlErrorMap)
 
 func RegisterErrors(errs ...map[error]any) {

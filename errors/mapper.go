@@ -27,9 +27,8 @@ func (m *Mapper) Get(err error) (out any, outErr error) {
 	out = m.onNotFound
 	outErr = err
 
-	defer func() {
-		recover() // todo, find better way to deal with 'unhashable errors'
-	}()
+	// todo, find better way to deal with 'unhashable errors'
+	defer func() { recover() }()
 
 	foundErr, ok := m.Errors[unwrapped]
 	if ok {
