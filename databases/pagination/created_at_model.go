@@ -10,10 +10,19 @@ type CreatedAtPageQuery struct {
 	QPage    int    `json:"page"`
 	QPerPage int    `json:"perPage"`
 	QOrder   string `json:"order"`
+	QField   string `json:"field"`
 }
 
 func (c *CreatedAtPageQuery) Field() string {
-	return "created_at"
+	if c.QField == "" {
+		return "created_at"
+	}
+
+	return c.QField
+}
+
+func (c *CreatedAtPageQuery) SetField(field string) {
+	c.QField = field
 }
 
 func (c *CreatedAtPageQuery) Order() string {
