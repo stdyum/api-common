@@ -8,7 +8,7 @@ import (
 func EnrollmentAuthMiddleware() hc.HandlerFunc {
 	return func(ctx *hc.Context) {
 		token := ctx.GetHeader("Authorization")
-		studyPlaceId := ctx.Query("studyPlaceId")
+		studyPlaceId := ctx.GetHeader("Study-Place-Id")
 
 		enrollmentUser, err := grpc.EnrollmentAuth(ctx, token, studyPlaceId)
 		if err != nil {
@@ -19,5 +19,6 @@ func EnrollmentAuthMiddleware() hc.HandlerFunc {
 
 		ctx.Set("enrollmentUser", enrollmentUser)
 		ctx.Set("enrollment", enrollmentUser.Enrollment)
+		ctx.Set("studyPlaceId", enrollmentUser.Enrollment.StudyPlaceId)
 	}
 }

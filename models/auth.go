@@ -9,10 +9,10 @@ import (
 type Role string
 
 var (
-	RoleTeacher  Role = "teacher"
-	RoleStudent  Role = "student"
-	RolePersonal Role = "personal"
-	RoleAdmin    Role = "admin"
+	RoleTeacher Role = "teacher"
+	RoleStudent Role = "student"
+	RoleStuff   Role = "stuff"
+	RoleAdmin   Role = "admin"
 )
 
 type Permission string
@@ -23,6 +23,7 @@ var (
 	PermissionEnrollments Permission = "enrollments"
 	PermissionRegistry    Permission = "registry"
 	PermissionSchedule    Permission = "schedule"
+	PermissionJournal     Permission = "journal"
 )
 
 type PreferenceGroup string

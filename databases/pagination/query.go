@@ -44,7 +44,7 @@ func QueryPaginationContext(ctx context.Context, database *sql.DB, query string,
 	}
 
 	var total int
-	row := database.QueryRowContext(ctx, countQuery)
+	row := database.QueryRowContext(ctx, countQuery, args...)
 	if err = row.Scan(&total); err != nil {
 		return nil, 0, err
 	}

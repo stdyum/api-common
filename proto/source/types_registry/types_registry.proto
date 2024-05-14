@@ -13,15 +13,17 @@ message TypesIds {
 
   repeated string groupsIds = 3;
   repeated string roomsIds = 4;
-  repeated string subjectsIds = 5;
-  repeated string teachersIds = 6;
+  repeated string studentIds = 5;
+  repeated string subjectsIds = 6;
+  repeated string teachersIds = 7;
 }
 
 message TypesModels {
   map<string, Group> groups = 1;
   map<string, Room> rooms = 2;
-  map<string, Subject> subjects = 3;
-  map<string, Teacher> teachers = 4;
+  map<string, Student> students = 3;
+  map<string, Subject> subjects = 4;
+  map<string, Teacher> teachers = 5;
 }
 
 message Group {

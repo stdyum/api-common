@@ -1,6 +1,7 @@
 package hc
 
 import (
+	"errors"
 	"strconv"
 	"time"
 
@@ -32,6 +33,15 @@ func (ctx *Context) QueryUUID(key string) (uuid.UUID, error) {
 func (ctx *Context) QueryInt(key string) (int, error) {
 	value := ctx.Query(key)
 	return strconv.Atoi(value)
+}
+
+func (ctx *Context) QueryBool(key string) (bool, error) {
+	value := ctx.Query(key)
+	if value != "true" && value != "false" {
+		return false, errors.New("invalid query")
+	}
+
+	return value == "true", nil
 }
 
 func (ctx *Context) PaginationQuery() pagination.CreatedAtPageQuery {
@@ -71,4 +81,17 @@ func (ctx *Context) Enrollment() models.Enrollment {
 	}
 
 	return models.Enrollment{}
+}
+
+func (ctx *Context) StudyPlaceId() uuid.UUID {
+	uAny, ok := ctx.Get("studyPlaceId")
+	if !ok {
+		return uuid.Nil
+	}
+
+	if u, ok := uAny.(uuid.UUID); ok {
+		return u
+	}
+
+	return uuid.Nil
 }

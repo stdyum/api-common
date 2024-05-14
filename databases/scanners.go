@@ -2,6 +2,8 @@ package databases
 
 import (
 	"database/sql"
+
+	"github.com/stdyum/api-common/errors"
 )
 
 type Scan interface {
@@ -41,6 +43,10 @@ func ScanArrayErr[T any](scanner Scanner, rowScan func(row Scan) (T, error), err
 
 func ScanPagination[T any](scanner Scanner, rowScan func(row Scan) (T, error), amount int) ([]T, int, error) {
 	array, err := ScanArray(scanner, rowScan)
+	if errors.Is(sql.ErrNoRows, err) {
+		return nil, amount, nil
+	}
+
 	return array, amount, err
 }
 
