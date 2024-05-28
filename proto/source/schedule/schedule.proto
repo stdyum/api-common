@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package auth;
+option go_package = "/schedule";
+
+service schedule {
+  rpc GetUniqueEntries(EntriesFilter) returns (Entries) {}
+}
+
+message EntriesFilter {
+  string token = 1;
+  string studyPlaceId = 2;
+
+  string teacherId = 3;
+  string groupId = 4;
+  string subjectId = 5;
+}
+
+message Entries {
+  repeated Entry list = 1;
+}
+
+message Entry {
+  string teacherId = 1;
+  string groupId = 2;
+  string subjectId = 3;
+}
