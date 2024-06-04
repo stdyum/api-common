@@ -4,7 +4,34 @@ package auth;
 option go_package = "/schedule";
 
 service schedule {
+  rpc GetLessonById(UUID) returns (Lesson) {}
+  rpc GetLessons(EntriesFilter) returns (Lessons) {}
   rpc GetUniqueEntries(EntriesFilter) returns (Entries) {}
+}
+
+message UUID {
+  string token = 1;
+  string studyPlaceId = 2;
+
+  string uuid = 3;
+}
+
+message Lesson {
+  string id = 1;
+  string studyPlaceId = 2;
+  string groupId = 3;
+  string roomId = 4;
+  string subjectId = 5;
+  string teacherId = 6;
+  int64 startTime = 7;
+  int64 endTime = 8;
+  int32 lessonIndex = 9;
+  string primaryColor = 10;
+  string secondaryColor = 11;
+}
+
+message Lessons {
+  repeated Lesson list = 1;
 }
 
 message EntriesFilter {
@@ -25,3 +52,4 @@ message Entry {
   string groupId = 2;
   string subjectId = 3;
 }
+

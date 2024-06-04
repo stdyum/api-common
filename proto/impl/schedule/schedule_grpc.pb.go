@@ -22,6 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ScheduleClient interface {
+	GetLessonById(ctx context.Context, in *UUID, opts ...grpc.CallOption) (*Lesson, error)
+	GetLessons(ctx context.Context, in *EntriesFilter, opts ...grpc.CallOption) (*Lessons, error)
 	GetUniqueEntries(ctx context.Context, in *EntriesFilter, opts ...grpc.CallOption) (*Entries, error)
 }
 
@@ -31,6 +33,24 @@ type scheduleClient struct {
 
 func NewScheduleClient(cc grpc.ClientConnInterface) ScheduleClient {
 	return &scheduleClient{cc}
+}
+
+func (c *scheduleClient) GetLessonById(ctx context.Context, in *UUID, opts ...grpc.CallOption) (*Lesson, error) {
+	out := new(Lesson)
+	err := c.cc.Invoke(ctx, "/auth.schedule/GetLessonById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *scheduleClient) GetLessons(ctx context.Context, in *EntriesFilter, opts ...grpc.CallOption) (*Lessons, error) {
+	out := new(Lessons)
+	err := c.cc.Invoke(ctx, "/auth.schedule/GetLessons", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *scheduleClient) GetUniqueEntries(ctx context.Context, in *EntriesFilter, opts ...grpc.CallOption) (*Entries, error) {
@@ -46,6 +66,8 @@ func (c *scheduleClient) GetUniqueEntries(ctx context.Context, in *EntriesFilter
 // All implementations must embed UnimplementedScheduleServer
 // for forward compatibility
 type ScheduleServer interface {
+	GetLessonById(context.Context, *UUID) (*Lesson, error)
+	GetLessons(context.Context, *EntriesFilter) (*Lessons, error)
 	GetUniqueEntries(context.Context, *EntriesFilter) (*Entries, error)
 	mustEmbedUnimplementedScheduleServer()
 }
@@ -54,6 +76,12 @@ type ScheduleServer interface {
 type UnimplementedScheduleServer struct {
 }
 
+func (UnimplementedScheduleServer) GetLessonById(context.Context, *UUID) (*Lesson, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLessonById not implemented")
+}
+func (UnimplementedScheduleServer) GetLessons(context.Context, *EntriesFilter) (*Lessons, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLessons not implemented")
+}
 func (UnimplementedScheduleServer) GetUniqueEntries(context.Context, *EntriesFilter) (*Entries, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUniqueEntries not implemented")
 }
@@ -68,6 +96,42 @@ type UnsafeScheduleServer interface {
 
 func RegisterScheduleServer(s grpc.ServiceRegistrar, srv ScheduleServer) {
 	s.RegisterService(&Schedule_ServiceDesc, srv)
+}
+
+func _Schedule_GetLessonById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UUID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ScheduleServer).GetLessonById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.schedule/GetLessonById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ScheduleServer).GetLessonById(ctx, req.(*UUID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Schedule_GetLessons_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EntriesFilter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ScheduleServer).GetLessons(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.schedule/GetLessons",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ScheduleServer).GetLessons(ctx, req.(*EntriesFilter))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Schedule_GetUniqueEntries_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -95,6 +159,14 @@ var Schedule_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "auth.schedule",
 	HandlerType: (*ScheduleServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetLessonById",
+			Handler:    _Schedule_GetLessonById_Handler,
+		},
+		{
+			MethodName: "GetLessons",
+			Handler:    _Schedule_GetLessons_Handler,
+		},
 		{
 			MethodName: "GetUniqueEntries",
 			Handler:    _Schedule_GetUniqueEntries_Handler,

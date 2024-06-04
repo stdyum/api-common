@@ -5,6 +5,8 @@ option go_package = "/types_registry";
 
 service typesRegistry {
   rpc GetTypesByIds(TypesIds) returns (TypesModels) {}
+  rpc GetStudentsInGroup(GroupId) returns (Students) {}
+  rpc GetStudentGroups(StudentId) returns (Groups) {}
 }
 
 message TypesIds {
@@ -49,4 +51,26 @@ message Subject {
 message Teacher {
   string id = 1;
   string name = 2;
+}
+
+message GroupId {
+  string token = 1;
+  string studyPlaceId = 2;
+
+  string uuid = 3;
+}
+
+message StudentId {
+  string token = 1;
+  string studyPlaceId = 2;
+
+  string uuid = 3;
+}
+
+message Students {
+  repeated Student list = 1;
+}
+
+message Groups {
+  repeated Group list = 1;
 }
