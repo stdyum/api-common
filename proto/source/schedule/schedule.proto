@@ -41,10 +41,15 @@ message EntriesFilter {
   string teacherId = 3;
   string groupId = 4;
   string subjectId = 5;
+
+  string cursor = 6;
+  int32 limit = 7;
 }
 
 message Entries {
   repeated Entry list = 1;
+  string next = 2;
+  int32 limit = 3;
 }
 
 message Entry {

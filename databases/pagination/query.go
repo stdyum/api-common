@@ -36,6 +36,34 @@ func AppendPagination(sql string, query Query, varStart int) (string, []any) {
 	return builder.String(), []any{query.Cursor()}
 }
 
+func AppendPaginationUncountable(sql string, query Query) (string, []any) {
+	builder := strings.Builder{}
+	builder.WriteString(sql)
+
+	if strings.Contains(sql, "WHERE") {
+		builder.WriteString(" AND (")
+	} else {
+		builder.WriteString(" WHERE (")
+	}
+
+	builder.WriteString(query.Field())
+	builder.WriteString(" ")
+
+	if query.Order() == "desc" {
+		builder.WriteString("<")
+	} else {
+		builder.WriteString(">")
+	}
+
+	builder.WriteString(" ?")
+	builder.WriteString(") ORDER BY ")
+	builder.WriteString(query.Field())
+	builder.WriteString(" LIMIT ")
+	builder.WriteString(strconv.Itoa(query.PerPage()))
+
+	return builder.String(), []any{query.Cursor()}
+}
+
 func QueryPaginationContext(ctx context.Context, database *sql.DB, query string, countQuery string, pagination Query, args ...any) (*sql.Rows, int, error) {
 	paginationQuery, vars := AppendPagination(query, pagination, len(args)+1)
 	result, err := database.QueryContext(ctx, paginationQuery, append(args, vars...)...)
