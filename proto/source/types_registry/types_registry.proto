@@ -7,6 +7,7 @@ service typesRegistry {
   rpc GetTypesByIds(TypesIds) returns (TypesModels) {}
   rpc GetStudentsInGroup(GroupId) returns (Students) {}
   rpc GetStudentGroups(StudentId) returns (Groups) {}
+  rpc GetGroupIdsWithStudents(Auth) returns (GroupIds) {}
 }
 
 message TypesIds {
@@ -73,4 +74,13 @@ message Students {
 
 message Groups {
   repeated Group list = 1;
+}
+
+message Auth {
+  string token = 1;
+  string studyPlaceId = 2;
+}
+
+message GroupIds {
+  repeated string list = 1;
 }

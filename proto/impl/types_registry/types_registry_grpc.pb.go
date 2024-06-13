@@ -25,6 +25,7 @@ type TypesRegistryClient interface {
 	GetTypesByIds(ctx context.Context, in *TypesIds, opts ...grpc.CallOption) (*TypesModels, error)
 	GetStudentsInGroup(ctx context.Context, in *GroupId, opts ...grpc.CallOption) (*Students, error)
 	GetStudentGroups(ctx context.Context, in *StudentId, opts ...grpc.CallOption) (*Groups, error)
+	GetGroupIdsWithStudents(ctx context.Context, in *Auth, opts ...grpc.CallOption) (*GroupIds, error)
 }
 
 type typesRegistryClient struct {
@@ -62,6 +63,15 @@ func (c *typesRegistryClient) GetStudentGroups(ctx context.Context, in *StudentI
 	return out, nil
 }
 
+func (c *typesRegistryClient) GetGroupIdsWithStudents(ctx context.Context, in *Auth, opts ...grpc.CallOption) (*GroupIds, error) {
+	out := new(GroupIds)
+	err := c.cc.Invoke(ctx, "/studyplaces.typesRegistry/GetGroupIdsWithStudents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TypesRegistryServer is the server API for TypesRegistry service.
 // All implementations must embed UnimplementedTypesRegistryServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type TypesRegistryServer interface {
 	GetTypesByIds(context.Context, *TypesIds) (*TypesModels, error)
 	GetStudentsInGroup(context.Context, *GroupId) (*Students, error)
 	GetStudentGroups(context.Context, *StudentId) (*Groups, error)
+	GetGroupIdsWithStudents(context.Context, *Auth) (*GroupIds, error)
 	mustEmbedUnimplementedTypesRegistryServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedTypesRegistryServer) GetStudentsInGroup(context.Context, *Gro
 }
 func (UnimplementedTypesRegistryServer) GetStudentGroups(context.Context, *StudentId) (*Groups, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStudentGroups not implemented")
+}
+func (UnimplementedTypesRegistryServer) GetGroupIdsWithStudents(context.Context, *Auth) (*GroupIds, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupIdsWithStudents not implemented")
 }
 func (UnimplementedTypesRegistryServer) mustEmbedUnimplementedTypesRegistryServer() {}
 
@@ -152,6 +166,24 @@ func _TypesRegistry_GetStudentGroups_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TypesRegistry_GetGroupIdsWithStudents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Auth)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TypesRegistryServer).GetGroupIdsWithStudents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/studyplaces.typesRegistry/GetGroupIdsWithStudents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TypesRegistryServer).GetGroupIdsWithStudents(ctx, req.(*Auth))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TypesRegistry_ServiceDesc is the grpc.ServiceDesc for TypesRegistry service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var TypesRegistry_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStudentGroups",
 			Handler:    _TypesRegistry_GetStudentGroups_Handler,
+		},
+		{
+			MethodName: "GetGroupIdsWithStudents",
+			Handler:    _TypesRegistry_GetGroupIdsWithStudents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

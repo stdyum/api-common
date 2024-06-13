@@ -39,7 +39,7 @@ message EntriesFilter {
   string studyPlaceId = 2;
 
   string teacherId = 3;
-  string groupId = 4;
+  repeated string groupIds = 4;
   string subjectId = 5;
 
   string cursor = 6;
