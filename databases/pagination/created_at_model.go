@@ -7,6 +7,7 @@ import (
 
 type CreatedAtPageQuery struct {
 	QCursor  string `json:"cursor"`
+	QSearch  string `json:"search"`
 	QPage    int    `json:"page"`
 	QPerPage int    `json:"perPage"`
 	QOrder   string `json:"order"`
@@ -23,6 +24,10 @@ func (c *CreatedAtPageQuery) Field() string {
 
 func (c *CreatedAtPageQuery) SetField(field string) {
 	c.QField = field
+}
+
+func (c *CreatedAtPageQuery) Search() string {
+	return c.QSearch
 }
 
 func (c *CreatedAtPageQuery) Order() string {

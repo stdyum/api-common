@@ -7,7 +7,7 @@ import (
 )
 
 func GetNextCreatedAtQuery(rows []entities.Timed, total int, query Query) *CreatedAtPageQuery {
-	if query.Page()*query.PerPage() >= total {
+	if query.Page()*query.PerPage() >= total || len(rows) == 0 {
 		return nil
 	}
 

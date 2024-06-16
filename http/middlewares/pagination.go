@@ -11,6 +11,7 @@ func PaginationMiddleware(defaultPerPage int) hc.HandlerFunc {
 	return func(ctx *hc.Context) {
 
 		cursor := ctx.Query("cursor")
+		search := ctx.Query("search")
 		pageStr := ctx.Query("page")
 		perPageStr := ctx.Query("perPage")
 		order := ctx.Query("order")
@@ -27,6 +28,7 @@ func PaginationMiddleware(defaultPerPage int) hc.HandlerFunc {
 
 		paginationQuery := pagination.CreatedAtPageQuery{
 			QCursor:  cursor,
+			QSearch:  search,
 			QPage:    page,
 			QPerPage: perPage,
 			QOrder:   order,
