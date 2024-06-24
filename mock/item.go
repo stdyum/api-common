@@ -5,6 +5,7 @@ import (
 )
 
 type DataItem[D any, I any] struct {
+	Name          string
 	Config        ConfigItem
 	Data          D
 	Generate      func(ctx context.Context, i int, data *D) (I, error)
@@ -15,6 +16,7 @@ type DataItem[D any, I any] struct {
 
 func (item DataItem[D, I]) Build() RawItem {
 	return DataItemNested[D, I, any]{
+		Name:          item.Name,
 		Config:        item.Config,
 		Data:          item.Data,
 		Generate:      item.convertGenerateFunc(),

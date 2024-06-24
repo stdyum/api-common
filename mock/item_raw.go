@@ -2,6 +2,7 @@ package mock
 
 import (
 	"context"
+	"fmt"
 )
 
 type ConfigItem struct {
@@ -10,6 +11,7 @@ type ConfigItem struct {
 }
 
 type RawItem struct {
+	Name          string
 	Config        ConfigItem
 	Data          any
 	Generate      func(ctx context.Context, i int, data *any, previous any) (any, error)
@@ -23,6 +25,7 @@ func (i *RawItem) Mock(ctx context.Context, config Config) error {
 }
 
 func (i *RawItem) MockWithPrevious(ctx context.Context, config Config, previous any) error {
+	fmt.Printf("mocking [%s]\n", i.Name)
 	items, err := i.getItems(ctx, config, previous)
 	if err != nil {
 		return err
@@ -77,6 +80,7 @@ func (i *RawItem) insert(ctx context.Context, config Config, items []any, previo
 			end = len(items)
 		}
 
+		fmt.Printf("inserting [%d-%d/%d]\n", index, end, len(items))
 		if err := i.Insert(ctx, index, items[index:end], previous); err != nil {
 			return err
 		}
